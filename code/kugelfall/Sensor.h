@@ -1,13 +1,16 @@
 #pragma once
+
 #include "Arduino.h"
 
 class Sensor {
 
-private:
+protected:
 	int pin;
 
 public:
 	Sensor(int pin);
 
-	int getValue();
+	bool getValue();
+
+	int getPin();
 };

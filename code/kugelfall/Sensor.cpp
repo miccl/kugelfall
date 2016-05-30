@@ -4,6 +4,10 @@ Sensor::Sensor(int pin) {
 	pinMode(pin, INPUT);
 }
 
-int Sensor::getValue() {
+bool Sensor::getValue() {
 	return digitalRead(pin);
+}
+
+int Sensor::getPin() {
+	return pin;
 }

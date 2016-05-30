@@ -1,8 +1,8 @@
 class Disk {
 
 private:
-	int ARC_LENGTH;
-	boolean isWaiting;
+	const int ARC_LENGTH = 1;
+	bool isWaiting;
 
 public:
 	Disk();
