@@ -6,24 +6,33 @@
 // sensors
 const int photoPin = 2;
 const int hallPin = 3;
-
-PrintWriter output;
+const int button1Pin = 10;
+bool pressed = false;
 
 void setup() {
   pinMode(photoPin, INPUT);
   pinMode(hallPin, INPUT);
-
-  output = createWriter("sensor.txt")
+  pinMode(button1Pin, INPUT);
+  
   Serial.begin(9600);           // set up Serial library at 9600 bps
 
 }
 
 void loop() {
-  hallState = digitalRead(hallPin);
-  output.print(hallState, DEC);
-  output.print(",");
-  photoState = digitalRead(photoPin);
-  output.print(photoState, DEC);
-  output.println();
-  Serial.print("SENSORWERTERFASSUNG");
+  if(digitalRead(button1Pin)) {
+    pressed = true;
+  }
+  
+  if(!pressed) {
+    long time = millis();
+    bool hallState = digitalRead(hallPin);
+    bool photoState = digitalRead(photoPin);
+    Serial.print(time);
+    Serial.print(",");
+    Serial.print(hallState, DEC);
+    Serial.print(",");
+    Serial.print(photoState, DEC);
+    Serial.println();
+  }  
+  delay(10);
 }
