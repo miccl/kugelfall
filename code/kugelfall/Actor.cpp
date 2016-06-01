@@ -1,6 +1,6 @@
 #include "Actor.h"
 
-Actor::Actor(int pin) : _pin(pin) {
+Actor::Actor(int pin) : Component(pin) {
 	pinMode(pin, OUTPUT);
 }
 
