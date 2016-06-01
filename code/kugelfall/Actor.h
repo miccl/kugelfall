@@ -5,7 +5,7 @@
 class Actor : public Component {
 
 public:
-	Actor(int pin);
+  Actor(int pin);
 
-	void setValue(int value);
+  void setValue(int value);
 };

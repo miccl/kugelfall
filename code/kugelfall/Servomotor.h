@@ -11,8 +11,6 @@ private:
 	const int startPos = 0;
 
 protected:
-	int _pin;
-
 	Servo _servo;
 
 public:
