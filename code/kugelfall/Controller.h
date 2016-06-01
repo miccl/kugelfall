@@ -3,21 +3,22 @@
 #include "Arduino.h"
 #include "Sensor.h"
 #include "Servomotor.h"
-#include "Trigger.h"
+#include "Disk.h"
 
 class Controller {
 private:
-	Sensor* hallSensor;
-	Sensor* photoSensor;
-	Servomotor* servomotor;
-	Trigger* trigger;
+	Sensor* _hs;
+	Sensor* _ps;
+  Sensor* _tg;
+	Servomotor* _servo;
+  Disk* _disk;
   bool isActivated;
   int count;
 protected:
 	const int FALL_DURATION = 0;
 
 public:
-	Controller(Sensor* ps, Sensor* hs, Servomotor* sm, Trigger* tg);
+	Controller(Sensor* ps, Sensor* hs, Sensor* tg, Servomotor* servo, Disk* disk);
 
 	int getReleaseTime();
 

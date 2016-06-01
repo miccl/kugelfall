@@ -1,9 +1,9 @@
 #include "Controller.h"
 
-Controller::Controller(Sensor* ps, Sensor* hs, Servomotor* sm, Trigger* tg) : photoSensor(ps), hallSensor(hs), servomotor(sm), trigger(tg) {
+Controller::Controller(Sensor* ps, Sensor* hs, Sensor* tg, Servomotor* servo, Disk* disk) : _ps(ps), _hs(hs), _servo(servo), _tg(tg), _disk(disk) {
 	// erstmal nur schemenhaft gemacht. auch die funktionsbezeichnungen sind nicht ideal.
  // der compiler meckert da auch rum. auf die schnelle habe ich da keine loesung gefunden.
-	//attachInterrupt(digitalPinToInterrupt(photoSensor->getPin()), photo, CHANGE);
+	//attachInterrupt(digitalPinToInterrupt(ps->getPin()), photo, CHANGE);
 	//attachInterrupt(digitalPinToInterrupt(hallSensor->getPin()), hall, CHANGE);
 	//attachInterrupt(digitalPinToInterrupt(trigger->getPin()), trigg, CHANGE);
 
