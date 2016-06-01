@@ -25,18 +25,13 @@ Sensor* hs;
 Sensor* ps;
 Servomotor* servo;
 Disk* disk;
-Sensor* tg;
-Controller* controller;
+Trigger* tg;
 
 void setup() {
   hs = new Sensor(hallPin);
   ps = new Sensor(photoPin);
-  tg = new Sensor(triggerPin);
   servo = new Servomotor(servoPin);
-  disk = new Disk(ps);
-  controller = new Controller(ps, hs, tg, servo, disk);
-
-
+  tg = new Trigger(triggerPin);
   Serial.begin(9600);           // set up Serial library at 9600 bps
 
 }
@@ -52,4 +47,3 @@ void loop() {
     servo->close();
   }  
 }
-
