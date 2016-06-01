@@ -11,12 +11,12 @@ private:
 	const int startPos = 0;
 
 protected:
-	const int servoPin = 9;
+	int _pin;
 
-	Servo servo;
+	Servo _servo;
 
 public:
-	Servomotor();
+	Servomotor(int pin);
 
 	/**
 	* Opens the release.

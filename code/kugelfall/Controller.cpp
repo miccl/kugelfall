@@ -30,5 +30,6 @@ void Controller::hall() {
 }
 
 void Controller::trigg() {
-
+  count++;
+  isActivated = true;
 }

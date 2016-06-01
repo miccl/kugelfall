@@ -1,9 +1,9 @@
 #include "Actor.h"
 
-Actor::Actor() {
+Actor::Actor(int pin) : _pin(pin) {
 	pinMode(pin, OUTPUT);
 }
 
 void Actor::setValue(int value) {
-	digitalWrite(pin, value);
+	digitalWrite(_pin, value);
 }

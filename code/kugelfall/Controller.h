@@ -11,6 +11,8 @@ private:
 	Sensor* photoSensor;
 	Servomotor* servomotor;
 	Trigger* trigger;
+  bool isActivated;
+  int count;
 protected:
 	const int FALL_DURATION = 0;
 

@@ -1,14 +1,15 @@
 #include "Servomotor.h"
 
-Servomotor::Servomotor() {
-	servo.attach(servoPin);
+//TODO: hier wäre die frage, ob wir es von Actor erben lassen, obwohl wir ja eigentlich das initialisieren mit dem pinMode brauchen bzw. ob es da zu irgendwelchen inteferenzen kommt.
+Servomotor::Servomotor(int pin) : Actor(pin) {
+	_servo.attach(pin);
 	close();
 }
 
 void Servomotor::open() {
-	servo.write(endPos);
+	_servo.write(endPos);
 }
 
 void Servomotor::close() {
-	servo.write(startPos);
+	_servo.write(startPos);
 }

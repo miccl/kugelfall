@@ -5,7 +5,7 @@
 class Sensor {
 
 protected:
-	int pin;
+	int _pin;
 
 public:
 	Sensor(int pin);

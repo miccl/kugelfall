@@ -5,10 +5,10 @@
 class Actor {
 
 protected:
-	int pin;
-	int value;
+	int _pin;
+
 public:
-	Actor();
+	Actor(int pin);
 
 	void setValue(int value);
 };

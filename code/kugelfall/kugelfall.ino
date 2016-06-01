@@ -12,6 +12,9 @@
 // sensors
 const int photoPin = 2;
 const int hallPin = 3;
+const int triggerPin = 4;
+const int servoPin = 9;
+
 const int LEDPin = 13;
 const int button1Pin = 10;
 int hallState;
@@ -22,10 +25,13 @@ Sensor* hs;
 Sensor* ps;
 Servomotor* servo;
 Disk* disk;
+Trigger* tg;
 
 void setup() {
   hs = new Sensor(hallPin);
   ps = new Sensor(photoPin);
+  servo = new Servomotor(servoPin);
+  tg = new Trigger(triggerPin);
   Serial.begin(9600);           // set up Serial library at 9600 bps
 
 }
@@ -35,17 +41,9 @@ void loop() {
     pressed = true;
   }
   
-  if(!pressed) {
-    long time = millis();
-    bool hallState = hs->getValue();
-    bool photoState = ps->getValue();
-    Serial.print(time);
-    Serial.print(",");
-    Serial.print(hallState, DEC);
-    Serial.print(",");
-    Serial.print(photoState, DEC);
-    Serial.println();
-    digitalWrite(LEDPin, hallState);
+  if(tg->getValue()) {
+    servo->open();
+    delay(100);
+    servo->close();
   }  
-  delay(10);
 }
