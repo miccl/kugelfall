@@ -14,6 +14,7 @@ private:
   Disk* _disk;
   bool isActivated;
   int count;
+  
 protected:
   const int FALL_DURATION = 0;
 
@@ -24,11 +25,7 @@ public:
 
   int getHoleDelay();
 
-  void rele(int releaseTime);
-
-  void photo();
-
-  void hall();
-
-  void trigg();
+  void release();
+  
+  void release(int releaseTime);
 };

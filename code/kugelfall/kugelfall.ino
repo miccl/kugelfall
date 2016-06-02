@@ -7,7 +7,6 @@
 #include "Servomotor.h"
 #include "Disk.h"
 #include "Controller.h"
-#include "Trigger.h"
 
 // sensors
 const int photoPin = 2;
@@ -20,6 +19,7 @@ const int button1Pin = 10;
 int hallState;
 int photoState;
 bool pressed;
+int count;
 
 Sensor* hs;
 Sensor* ps;
@@ -35,7 +35,10 @@ void setup() {
   servo = new Servomotor(servoPin);
   disk = new Disk(ps);
   controller = new Controller(ps, hs, tg, servo, disk);
-
+  
+  attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoISR, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(hs->getPin()), hallISR, RISING);
+  attachInterrupt(digitalPinToInterrupt(tg->getPin()), triggerISR, RISING);
 
   Serial.begin(9600);           // set up Serial library at 9600 bps
 
@@ -47,9 +50,26 @@ void loop() {
   }
   
   if(tg->getValue()) {
-    servo->open();
-    delay(100);
-    servo->close();
+    controller->release();
   }  
+
+  if(count>0) {
+    int t_rel = controller->getReleaseTime();
+    controller->release(t_rel);
+    count--;
+    delay(1000); //delay, damit nicht hintereinander gleich zwei Kugeln losgelassen werden
+  }
+}
+
+void photoISR() {
+  
+}
+
+void hallISR() {
+
+}
+
+void triggerISR() {
+//  count++;
 }
 

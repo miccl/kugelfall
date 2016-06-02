@@ -5,5 +5,8 @@ Disk::Disk(Sensor* ps) : _ps(ps) {
 }
 
 int Disk::getSpeed() {
-  //TODO
+  int t = t_low > t_high ? t_low - t_high : t_high - t_low;
+  int speed = ARC_LENGTH / t;
+  return speed;
 }
+
