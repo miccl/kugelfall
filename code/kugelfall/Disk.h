@@ -1,11 +1,21 @@
+#pragma once
+
+#include "Sensor.h"
+
 class Disk {
 
 private:
-	const int ARC_LENGTH = 1;
-	bool isWaiting;
+  const int ARC_LENGTH = 1;
+  bool isWaiting;
+  int getDiff(int t1, int t2);
+  
+  Sensor* _ps;
 
 public:
-	Disk();
+  int t_low;
+  int t_high;
 
-	int getSpeed();
+  Disk(Sensor* ps);
+
+  int getSpeed();
 };

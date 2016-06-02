@@ -1,14 +1,11 @@
 #pragma once
 
-#include "Arduino.h"
+#include "Component.h"
 
-class Actor {
-
-protected:
-	int _pin;
+class Actor : public Component {
 
 public:
-	Actor(int pin);
+  Actor(int pin);
 
-	void setValue(int value);
+  void setValue(int value);
 };
