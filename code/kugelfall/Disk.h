@@ -5,7 +5,7 @@
 class Disk {
 
 private:
-  const double S_DISK = 0.1;
+  const double S_DISK = 1;
   const int NUMBER_SECTORS = 12;
   const double S_ARC = S_DISK/NUMBER_SECTORS;
   const double S_HOLE = 0.06;
