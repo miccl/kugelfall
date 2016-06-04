@@ -16,12 +16,14 @@ private:
   int count;
   
 protected:
-  const int FALL_DURATION = 0;
+  const double S_FALL = 0.75;
+  const double FALL_ACCLERATION = 9.81;
+  const double T_FALL = sqrt(2*(S_FALL/FALL_ACCLERATION));
 
 public:
   Controller(Sensor* ps, Sensor* hs, Sensor* tg, Servomotor* servo, Disk* disk);
 
-  int getReleaseTime();
+  int getReleaseTime(long t_loch);
 
   int getHoleDelay();
 

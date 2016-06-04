@@ -5,10 +5,11 @@
 class Disk {
 
 private:
-  const int ARC_LENGTH = 1;
-  bool isWaiting;
-  int getDiff(int t1, int t2);
-  
+  const double S_DISK = 0.1;
+  const int NUMBER_SECTORS = 12;
+  const double S_ARC = S_DISK/NUMBER_SECTORS;
+  const double S_HOLE = 0.06;
+  bool isWaiting;  
   Sensor* _ps;
 
 public:
@@ -17,5 +18,5 @@ public:
 
   Disk(Sensor* ps);
 
-  int getSpeed();
+  double getSpeed();
 };

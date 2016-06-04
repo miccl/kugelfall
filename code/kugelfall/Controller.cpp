@@ -4,9 +4,10 @@ Controller::Controller(Sensor* ps, Sensor* hs, Sensor* tg, Servomotor* servo, Di
 
 }
 
-int Controller::getReleaseTime() {
+int Controller::getReleaseTime(long t_loch) {
   // TODO - implement Controller::getReleaseTime
-  int speed = _disk->getSpeed();
+  double speed = _disk->getSpeed();
+  double t_0 = t_loch + S_FALL/speed - T_FALL;
 }
 
 int Controller::getHoleDelay() {
@@ -24,9 +25,12 @@ void Controller::release() {
  * Releases a ball at the given time.
  */
 void Controller::release(int releaseTime) {
-  //weiß net mehr wie wir das wollten. ob jetzt wir jetzt nen delay nutzen wollten oder nen pull
-    int waitTime = releaseTime - millis();
-    if(waitTime > 0) 
-      delay(waitTime);
+  //weiß net mehr wie wir das wollten. ob jetzt wir jetzt nen delay nutzen wollten oder ne ständige abfrage
+  while(millis()<=releaseTime) {
+    
+  }
+//    int waitTime = releaseTime - millis();
+//    if(waitTime > 0) 
+//      delay(waitTime);
    release();
 }
