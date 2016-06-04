@@ -14,6 +14,7 @@ private:
 public:
   int t_low;
   int t_high;
+  const double S_DISK = 1;
 
 
   Disk(Sensor* ps);
