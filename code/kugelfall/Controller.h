@@ -23,11 +23,25 @@ protected:
 public:
   Controller(Sensor* ps, Sensor* hs, Sensor* tg, Servomotor* servo, Disk* disk);
 
-  int getReleaseTime(long t_loch);
+ /*
+ * Calculates the relase time for the given hole time.
+ * 
+ * @param t_hole time the hole passed the hall sensor
+ * @return calculated release time
+ */
+  int getReleaseTime(long t_hole);
 
   int getHoleDelay();
 
+ /**
+ * Release a ball immediatly.
+ */
   void release();
-  
+
+  /**
+ * Releases a ball at the given time.
+ * 
+ * @param releaseTime the time at which to release the ball.
+ */
   void release(int releaseTime);
 };
