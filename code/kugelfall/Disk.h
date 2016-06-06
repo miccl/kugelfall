@@ -14,6 +14,7 @@ private:
 public:
   int t_low;
   int t_high;
+  int t_hall;
   const double S_DISK = 1;
 
 
@@ -24,5 +25,5 @@ public:
    * 
    * @return the current disk speed
    */
-  double getSpeed();
+  int getDelta();
 };

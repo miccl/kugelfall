@@ -29,6 +29,7 @@ bool activated;
 Sensor* hs;
 Sensor* ps;
 Servomotor* servo;
+Actor* led;
 Disk* disk;
 Sensor* tg;
 Controller* controller;
@@ -37,11 +38,13 @@ void setup() {
   hs = new Sensor(hallPin);
   ps = new Sensor(photoPin);
   tg = new Sensor(triggerPin);
+  led = new Actor(LEDPin);
   servo = new Servomotor(servoPin);
   disk = new Disk(ps);
   controller = new Controller(ps, hs, tg, servo, disk);
   
-  attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoISR, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoRisingISR, RISING);
+  attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoFallingISR, FALLING);
   attachInterrupt(digitalPinToInterrupt(hs->getPin()), hallISR, RISING);
   attachInterrupt(digitalPinToInterrupt(tg->getPin()), triggerISR, RISING);
 
@@ -56,40 +59,35 @@ void loop() {
   
   if(tg->getValue()) {
     controller->release();
-  }  
-}
-
-void photoISR() {
-  //TODO müssen hier aufpassen, dass die geschwindigkeit auf falschen werten gelesen wird. also wenn disk getSpeed macht liest er die werte aus. wurden die aber noch nicht von dem hier aktualisiert, wäre das fatal. 
-  //dumme alternative wäre, wir lassen das hier die ganze zeit laufen.
-  if (activated) { //if the trigger was pressed
-      if (photoStateFlank) { 
-        disk->t_low = millis();
-        photoStateFlank = true;
-      }
-      else {
-        disk->t_low = millis();
-        photoStateFlank = false;
-      }
   }
 
+  if (count > 0) {
+    int t_release = controller->getReleaseTime();
+    controller->release(t_release);
+    count--;
+    
+  }
+  
+}
+
+void photoRisingISR() {
+  disk->t_low = millis();
+}
+
+void photoFallingISR() {
+  disk->t_high = millis();
 }
 
 void hallISR() {
-  if(activated) {
-    //TODO siehe oben. vielleicht hier nen delay einbauen, der auch abhängig von der scheibengeschwindigkeit ist.
-    double t_rel = controller->getReleaseTime(millis()); //TODO wir müssen mit den Einheiten aufpassen,
-    controller->release(t_rel);
-    count--;
-    if(count==0) {
-      activated = false;
-    }
-    delay(1000); //delay, damit nicht hintereinander gleich zwei Kugeln losgelassen werden
-  }
+  disk->t_hall = millis();
+  led->setValue(true);
+  delay(100);
+  led->setValue(false);
 }
 
 void triggerISR() {
   count++;
-  activated = true;
 }
+
+
 

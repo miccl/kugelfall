@@ -18,7 +18,7 @@ private:
 protected:
   const double S_FALL = 0.75;
   const double FALL_ACCLERATION = 9.81;
-  const double T_FALL = sqrt(2*(S_FALL/FALL_ACCLERATION));
+  const double T_FALL = 0.391;
 
 public:
   Controller(Sensor* ps, Sensor* hs, Sensor* tg, Servomotor* servo, Disk* disk);
@@ -29,7 +29,7 @@ public:
  * @param t_hole time the hole passed the hall sensor
  * @return calculated release time
  */
-  int getReleaseTime(long t_hole);
+  int getReleaseTime();
 
   int getHoleDelay();
 
