@@ -1,6 +1,6 @@
 #include "Controller.h"
 
-Controller::Controller(Sensor* ps, Sensor* hs, Sensor* tg, Servomotor* servo, Disk* disk) : _ps(ps), _hs(hs), _servo(servo), _tg(tg), _disk(disk){
+Controller::Controller(Servomotor* servo, Disk* disk) : _servo(servo), _disk(disk){
 
 }
 

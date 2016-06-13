@@ -9,7 +9,6 @@ private:
   const double S_ARC = S_DISK/NUMBER_SECTORS;
   const double S_HOLE = 0.06;
   bool isWaiting;  
-  Sensor* _ps;
 
 public:
   long t_low = 0;
@@ -18,7 +17,7 @@ public:
   const double S_DISK = 1;
 
 
-  Disk(Sensor* ps);
+  Disk();
 
   /**
    * Calculates the speed of the disk
