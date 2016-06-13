@@ -12,9 +12,9 @@ private:
   Sensor* _ps;
 
 public:
-  int t_low;
-  int t_high;
-  int t_hall;
+  long t_low = 0;
+  long t_high = 0;
+  long t_hall = 0;
   const double S_DISK = 1;
 
 
@@ -25,5 +25,6 @@ public:
    * 
    * @return the current disk speed
    */
-  int getDelta();
+  long getDelta();
+
 };

@@ -1,6 +1,5 @@
 /**
- * sensor value capturing
- * gets the sensor values and write them into a file.
+ * 
  */
 
 #include "Sensor.h"
@@ -19,19 +18,15 @@ const int LEDPin = 13;
 //actors
 const int button1Pin = 10;
 
-int hallState;
-int photoState;
-bool photoStateFlank;
-bool pressed;
-int count;
-bool activated;
+int count = 0;
+bool isPhotoHigh = false;
 
 Sensor* hs;
 Sensor* ps;
+Sensor* tg;
 Servomotor* servo;
 Actor* led;
 Disk* disk;
-Sensor* tg;
 Controller* controller;
 
 void setup() {
@@ -42,40 +37,37 @@ void setup() {
   servo = new Servomotor(servoPin);
   disk = new Disk(ps);
   controller = new Controller(ps, hs, tg, servo, disk);
+
   
-  attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoRisingISR, RISING);
-  attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoFallingISR, FALLING);
+  attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoISR, CHANGE);
   attachInterrupt(digitalPinToInterrupt(hs->getPin()), hallISR, RISING);
-  attachInterrupt(digitalPinToInterrupt(tg->getPin()), triggerISR, RISING);
+  //attachInterrupt(digitalPinToInterrupt(tg->getPin()), triggerISR, RISING);
 
   Serial.begin(9600);           // set up Serial library at 9600 bps
 
 }
 
 void loop() {
-  if(digitalRead(button1Pin)) {
-    pressed = true;
-  }
-  
   if(tg->getValue()) {
-    controller->release();
+    triggerISR();
   }
-
   if (count > 0) {
-    int t_release = controller->getReleaseTime();
+    long t_release = controller->getReleaseTime();
     controller->release(t_release);
     count--;
-    
   }
   
 }
 
-void photoRisingISR() {
-  disk->t_low = millis();
-}
-
-void photoFallingISR() {
-  disk->t_high = millis();
+void photoISR() {
+  if(isPhotoHigh) {
+    disk->t_high = millis();
+    isPhotoHigh = false;
+  }
+  else {
+    disk->t_low = millis();
+    isPhotoHigh = true;
+  }
 }
 
 void hallISR() {
@@ -87,6 +79,8 @@ void hallISR() {
 
 void triggerISR() {
   count++;
+  //Serial.print("TRIGGER: ");
+  //Serial.println(count);
 }
 
 
