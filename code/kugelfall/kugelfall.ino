@@ -8,6 +8,7 @@
 #include "Disk.h"
 #include "Controller.h"
 
+
 // sensors
 const int photoPin = 2;
 const int hallPin = 3;
@@ -35,8 +36,8 @@ void setup() {
   tg = new Sensor(triggerPin);
   led = new Actor(LEDPin);
   servo = new Servomotor(servoPin);
-  disk = new Disk(ps);
-  controller = new Controller(ps, hs, tg, servo, disk);
+  disk = new Disk();
+  controller = new Controller(servo, disk);
 
   
   attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoISR, CHANGE);
