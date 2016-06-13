@@ -9,3 +9,8 @@ long Disk::getDelta() {
   return t_photo;
 }
 
+double Disk::getCyclesPerSecond() {
+  long t_cycle_ms = getDelta() * N_SECTORS;
+  return t_cycle_ms/1000;
+}
+

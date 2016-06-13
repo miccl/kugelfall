@@ -8,6 +8,7 @@
 #include "Disk.h"
 #include "Controller.h"
 
+#define DEBUG 0
 
 // sensors
 const int photoPin = 2;
@@ -80,8 +81,10 @@ void hallISR() {
 
 void triggerISR() {
   count++;
-  //Serial.print("TRIGGER: ");
-  //Serial.println(count);
+  #ifdef DEBUG
+    Serial.print("Trigger: ");
+    Serial.println(count);
+  #endif
 }
 
 

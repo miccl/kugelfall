@@ -11,6 +11,7 @@ private:
   Disk* _disk;
   bool isActivated;
   int count;
+  int releaseEps = 100;
   
   
 protected:
