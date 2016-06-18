@@ -1,0 +1,103 @@
+\documentclass[11pt,a4paper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{lmodern}
+\usepackage{paralist}
+\usepackage{titlepage}
+\usepackage{tabularx}
+\newcommand{\tablewidth}{.9\textwidth}
+\setkomafont{sectioning}{\normalfont\normalcolor\bfseries}
+\begin{document}
+\begin{fullsizetitle}
+	\centering
+	\vspace*{8cm}
+	\Huge
+	\scshape
+	Laborbericht zum Praktikum\par
+	\Large
+	Komplexe Informationstechnische Systeme\par
+	\vspace*{.5cm}
+	\large
+	Sommersemester 2016\par
+	\vspace*{2cm}
+	\normalfont\normalsize
+	Bennecke, Saskia\\
+	Clauß, Michael-Carsten\\
+	Lindner, Peter\par
+	\vspace*{5cm}
+	Technische Universität Ilmenau
+\end{fullsizetitle}
+\section{Systemanalyse}
+\subsection{Einleitung}
+TODO: Allgemeines Blabla, wie der Versuch aufgebaut ist und was es so alles daran gibt, was gemacht werden soll... Ggf. mit nem Bildchen verfeinern.
+\par %TODO 
+Memos:
+\begin{itemize}
+	\item Richtungsangaben beziehen sich auf eine frontale Sicht auf den Aufbau, indem der Betrachter vor der Seite mit der Öffnung und der Kugelentnahmestation steht.
+	\item Das korrekte Wort für die verschiedenfarbigen Teile der Scheibe lautet \glqq Sektor\grqq.
+\end{itemize}
+\subsection{Systemkomponenten}
+Die mit dem Loch versehene Scheibe hat folgende Daten:
+\begin{compactitem}
+	\item Radius bis zum Loch: ca. 16\,cm\\
+			(damit ergibt sich für die Lochbahn eine Länge von $2\pi\cdot16\text{\,cm} \approx 100$\,cm)
+	\item Anzahl Sektoren: 12 (6 schwarze und 6 weiße, im Wechsel)\\
+			(damit ergibt sich auf Lochhöhe die Länge des Sektorbogens zu $\frac{100\text{\,cm}}{12\text{\,cm}} = 8\frac{1}{3}\text{\,cm}$)
+	\item Länge des Lochs: ca. 6\,cm
+\end{compactitem}
+\begin{table}[h]
+	\centering
+	\begin{tabularx}{\tablewidth}{|l|r|X|}
+		\hline
+		\bfseries Name & \bfseries Pin & \bfseries Beschreibung und Funktion\\\hline\hline
+		Photosensor & 2 & Der Photosensor ist fest am Boden auf der hinteren rechten Seite des Aufbaus und erkennt, welche Art Kreissektor sich über ihm befindet:
+		\begin{compactitem}
+			\item \textbf{schwarzer Sektor:} Rückgabe $1$
+			\item \textbf{weißer Sektor:} Rückgabe $0$
+		\end{compactitem}
+		\\\hline
+		Hallsensor & 3 & Der Hallsensor ist fest am Boden auf der hinteren linken Seite des Aufbaus angebracht und erkennt anhand eines sich an der Scheibe befindlichen Magneten, wann das Loch an ihm vorbeikommt:
+		\begin{compactitem}
+			\item \textbf{Loch passiert Sensor:} setzt Wert ($1$)
+			\item \textbf{Gegenseite passiert Sensor:} setzt zurück ($0$)
+		\end{compactitem}
+		Der Sensorwert wird also wieder auf $0$ gesetzt, wenn sich die Scheibe eine halbe Umdrehung weitergedreht hat.\\\hline
+		Trigger & 4 & Der Trigger ist eine kleine kabelgebundene Fernbedienung mit einem Knopf. Der Sensorwert entspricht dem Knopfstatus:
+		\begin{compactitem}
+			\item \textbf{Knopf gedrückt:} Sensorwert $1$
+			\item \textbf{Knopf nicht gedrückt:} Sensorwert $0$
+		\end{compactitem}
+		Zur Verdeutlichung: Für die konstante Ausgabe $1$ muss der Knopf gedrückt gehalten werden.
+		\\\hline
+	\end{tabularx}
+	\caption{Sensorik}
+\end{table}
+\begin{table}[h]
+	\centering
+	\begin{tabularx}{\tablewidth}{|l|r|X|}
+		\hline
+		\bfseries Name & \bfseries Pin & \bfseries Beschreibung und Funktion\\\hline\hline
+		Servomotor & 9 & Der Servomotor steuert die Freigabe von Kugeln aus dem Kugellager. Er dreht zeitgleich die zwei oben genannten Metallplättchen.\\\hline
+	\end{tabularx}
+	\caption{Aktorik}
+\end{table}
+\subsection{Messungen und Tests}
+Memo:
+\begin{compactitem}
+\item Erwähnung des Fensters, für dass der Sensor gute Werte liefern muss (3,5 U/s bis 0,1 U/s)
+\item Erwähnung Nyquist und Berechnung der passenden Frequenz
+\item Erwähnung, dass das ne Schranke ist und wir aus Gründen 10 ms nehmen
+\end{compactitem}
+TODO %TODO
+\subsection{Nutzung der Sensorwerte}
+Um die geforderte Aufgabe umzusetzen, wurden zwei prinzipielle Möglichkeiten in Betracht gezogen, die sich auf die Art und Weise der verschiedenen Messvorgänge beziehen.
+\paragraph{Möglichkeit 1: Polling} Für eine bestimmte Zeitdauer werden die Anzahl der Flankenwechsel gezählt, die der Photosensor liefert. Anhand dessen wird die Frequenz der Schwarz-Weiß-Wechsel gebildet und die Geschwindigkeit des Lochs auf der Bahn berechnet.
+\begin{compactitem}
+\item Die passende Wahl des Zeitintervalls der Messung ist problematisch, da das Ergebnis für ein breites Spektrum an Drehgeschwindigkeiten korrekt sein muss.
+\item Ein festes Intervall muss sehr lang sein, da sehr langsame Drehungen richtig erkannt werden müssen.
+\end{compactitem}
+\paragraph{Möglichkeit 2: Interrupts} Nach Knopfdruck (Interrupt, dabei \#Knopfdrücke mitloggen) liefern die nächsten beiden Flanken des Photosensors ebenfalls einen Interrupt. Mittels einer einfachen binären Zustandsvariable wird das Warten auf die zweite Flanke realisiert. Nach der zweiten Flanke wird die Zeitdifferenz $\Delta t$ gebildet und anhand dessen die Geschwindigkeit $v_\text{Loch}$ des Lochs auf der Lochbahn: \[v_{\text{Loch}} = \frac{\text{Sektorbreite}}{\Delta t}\]
+\end{document}
