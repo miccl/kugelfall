@@ -51,7 +51,7 @@ void setup() {
 
 void loop() {
   if(tg->getValue()) {
-    triggerISR();
+    trigger();
   }
   if (count > 0) {
     long t_release = controller->getReleaseTime();
@@ -63,11 +63,11 @@ void loop() {
 
 void photoISR() {
   if(isPhotoHigh) {
-    disk->t_high = millis();
+    disk->t_photo_high = millis();
     isPhotoHigh = false;
   }
   else {
-    disk->t_low = millis();
+    disk->t_photo_low = millis();
     isPhotoHigh = true;
   }
 }
@@ -79,7 +79,7 @@ void hallISR() {
   led->setValue(false);
 }
 
-void triggerISR() {
+void trigger() {
   count++;
   #ifdef DEBUG
     Serial.print("Trigger: ");

@@ -23,7 +23,7 @@ public:
   Controller(Servomotor* servo, Disk* disk);
 
  /*
- * Calculates the relase time for the given hole time.
+ * Calculates the release time for the given hole time.
  * 
  * @param t_hole time the hole passed the hall sensor
  * @return calculated release time
