@@ -7,13 +7,12 @@
 
 class Controller {
 private:
-  Sensor* _hs;
-  Sensor* _ps;
-  Sensor* _tg;
   Servomotor* _servo;
   Disk* _disk;
   bool isActivated;
   int count;
+  int releaseEps = 100;
+  
   
 protected:
   const double S_FALL = 0.75;
@@ -21,10 +20,10 @@ protected:
   const long T_FALL = 450;
 
 public:
-  Controller(Sensor* ps, Sensor* hs, Sensor* tg, Servomotor* servo, Disk* disk);
+  Controller(Servomotor* servo, Disk* disk);
 
  /*
- * Calculates the relase time for the given hole time.
+ * Calculates the release time for the given hole time.
  * 
  * @param t_hole time the hole passed the hall sensor
  * @return calculated release time

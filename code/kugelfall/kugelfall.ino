@@ -8,6 +8,8 @@
 #include "Disk.h"
 #include "Controller.h"
 
+#define DEBUG 0
+
 // sensors
 const int photoPin = 2;
 const int hallPin = 3;
@@ -35,8 +37,8 @@ void setup() {
   tg = new Sensor(triggerPin);
   led = new Actor(LEDPin);
   servo = new Servomotor(servoPin);
-  disk = new Disk(ps);
-  controller = new Controller(ps, hs, tg, servo, disk);
+  disk = new Disk();
+  controller = new Controller(servo, disk);
 
   
   attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoISR, CHANGE);
@@ -49,7 +51,7 @@ void setup() {
 
 void loop() {
   if(tg->getValue()) {
-    triggerISR();
+    trigger();
   }
   if (count > 0) {
     long t_release = controller->getReleaseTime();
@@ -61,11 +63,11 @@ void loop() {
 
 void photoISR() {
   if(isPhotoHigh) {
-    disk->t_high = millis();
+    disk->t_photo_high = millis();
     isPhotoHigh = false;
   }
   else {
-    disk->t_low = millis();
+    disk->t_photo_low = millis();
     isPhotoHigh = true;
   }
 }
@@ -77,10 +79,12 @@ void hallISR() {
   led->setValue(false);
 }
 
-void triggerISR() {
+void trigger() {
   count++;
-  //Serial.print("TRIGGER: ");
-  //Serial.println(count);
+  #ifdef DEBUG
+    Serial.print("Trigger: ");
+    Serial.println(count);
+  #endif
 }
 
 

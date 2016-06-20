@@ -2,6 +2,8 @@
 
 #include "Arduino.h"
 
+#define DEBUG 0
+
 class Component {
 
 protected:
