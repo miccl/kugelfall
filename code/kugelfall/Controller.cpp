@@ -1,6 +1,7 @@
 #include "Controller.h"
 
 Controller::Controller(Servomotor* servo, Disk* disk, Sensor* trigger) : _servo(servo), _disk(disk), _trigger(trigger) {
+
   
 }
 
@@ -34,8 +35,7 @@ void Controller::release(long releaseTime) {
   
   int eps = 300; //TODO noch anständig zu wählen
   long currentTime = millis();
-  while(currentTime < releaseTime) {
-        
+  while(currentTime < releaseTime) {        
     //if(_trigger->getValue()) {
     //  increaseTriggerCount();
     //}

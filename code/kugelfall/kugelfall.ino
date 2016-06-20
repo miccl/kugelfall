@@ -8,6 +8,10 @@
 #include "Disk.h"
 #include "Controller.h"
 
+<<<<<<< HEAD
+=======
+#define DEBUG 0
+>>>>>>> aab87a284bc0b59cc5736830b81c8a18952703d7
 
 // sensors
 const int photoPin = 2;
@@ -37,6 +41,7 @@ void setup() {
   servo = new Servomotor(servoPin);
   disk = new Disk();
   controller = new Controller(servo, disk, tg);
+
 
   
   attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoISR, CHANGE);
@@ -77,6 +82,4 @@ void hallISR() {
   delay(100);
   led->setValue(false);
 }
-
-
 

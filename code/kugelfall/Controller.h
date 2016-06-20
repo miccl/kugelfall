@@ -5,15 +5,12 @@
 #include "Servomotor.h"
 #include "Disk.h"
 
-#define DEBUG 1
-
 class Controller {
 private:
   Servomotor* _servo;
   Disk* _disk;
   Sensor* _trigger;
   bool isActivated;
- 
   int releaseEps = 100;
   
   
