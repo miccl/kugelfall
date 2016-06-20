@@ -45,4 +45,6 @@ public:
   void release(long releaseTime);
 
   void increaseTriggerCount();
+
+  void addToRIngPuffer(long value);
 };

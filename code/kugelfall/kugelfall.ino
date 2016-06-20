@@ -39,8 +39,6 @@ void setup() {
   disk = new Disk();
   controller = new Controller(servo, disk, tg);
 
-
-  
   attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoISR, CHANGE);
   attachInterrupt(digitalPinToInterrupt(hs->getPin()), hallISR, RISING);
 
@@ -64,17 +62,17 @@ void loop() {
 
 void photoISR() {
   if(isPhotoHigh) {
-    disk->t_photo_high = millis();
+    disk->setPhotoHigh(millis());
     isPhotoHigh = false;
   }
   else {
-    disk->t_photo_low = millis();
+    disk->setPhotoLow(millis());
     isPhotoHigh = true;
   }
 }
 
 void hallISR() {
-  disk->t_hall = millis();
+  disk->setHall(millis());
   led->setValue(true);
   delay(100);
   led->setValue(false);
