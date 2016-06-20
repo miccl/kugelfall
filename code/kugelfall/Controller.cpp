@@ -1,12 +1,16 @@
 #include "Controller.h"
 
 Controller::Controller(Servomotor* servo, Disk* disk) : _servo(servo), _disk(disk){
-
+  
 }
 
 
 long Controller::getReleaseTime() {
   long delta_photo = _disk->getDelta();
+  #ifdef DEBUG
+    //Serial.print("Cps: ");
+    //Serial.println((_disk->getDelta()*12)/1000,DEC);
+  #endif
   long t_release = _disk->t_hall + 6*delta_photo - T_FALL;
   while(t_release < (millis() + releaseEps)) {
     t_release += 12 * delta_photo;
