@@ -8,6 +8,7 @@
 #include "Disk.h"
 #include "Controller.h"
 
+
 // sensors
 const int photoPin = 2;
 const int hallPin = 3;
@@ -18,7 +19,6 @@ const int LEDPin = 13;
 //actors
 const int button1Pin = 10;
 
-int count = 0;
 bool isPhotoHigh = false;
 
 Sensor* hs;
@@ -35,13 +35,12 @@ void setup() {
   tg = new Sensor(triggerPin);
   led = new Actor(LEDPin);
   servo = new Servomotor(servoPin);
-  disk = new Disk(ps);
-  controller = new Controller(ps, hs, tg, servo, disk);
+  disk = new Disk();
+  controller = new Controller(servo, disk, tg);
 
   
   attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoISR, CHANGE);
   attachInterrupt(digitalPinToInterrupt(hs->getPin()), hallISR, RISING);
-  //attachInterrupt(digitalPinToInterrupt(tg->getPin()), triggerISR, RISING);
 
   Serial.begin(9600);           // set up Serial library at 9600 bps
 
@@ -49,23 +48,25 @@ void setup() {
 
 void loop() {
   if(tg->getValue()) {
-    triggerISR();
+    controller->increaseTriggerCount();
   }
-  if (count > 0) {
+  Serial.println(disk->getDelta(), DEC); 
+  
+  if (controller->count > 0) {
     long t_release = controller->getReleaseTime();
     controller->release(t_release);
-    count--;
+    controller->count--;
   }
   
 }
 
 void photoISR() {
   if(isPhotoHigh) {
-    disk->t_high = millis();
+    disk->t_photo_high = millis();
     isPhotoHigh = false;
   }
   else {
-    disk->t_low = millis();
+    disk->t_photo_low = millis();
     isPhotoHigh = true;
   }
 }
@@ -75,12 +76,6 @@ void hallISR() {
   led->setValue(true);
   delay(100);
   led->setValue(false);
-}
-
-void triggerISR() {
-  count++;
-  //Serial.print("TRIGGER: ");
-  //Serial.println(count);
 }
 
 

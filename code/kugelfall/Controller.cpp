@@ -1,19 +1,19 @@
 #include "Controller.h"
 
-Controller::Controller(Sensor* ps, Sensor* hs, Sensor* tg, Servomotor* servo, Disk* disk) : _ps(ps), _hs(hs), _servo(servo), _tg(tg), _disk(disk){
-
+Controller::Controller(Servomotor* servo, Disk* disk, Sensor* trigger) : _servo(servo), _disk(disk), _trigger(trigger) {
+  
 }
 
 
 long Controller::getReleaseTime() {
-  // TODO - implement Controller::getReleaseTime
   long delta_photo = _disk->getDelta();
-  Serial.println(delta_photo);
-  long t_hall = _disk->t_hall;
-  Serial.println(t_hall);
-  long t_release = t_hall + 6*delta_photo - T_FALL;
-  int eps = 100; //10 oder 100
-  while(t_release < millis() + eps) {
+  #ifdef DEBUG
+    Serial.print("Delta: ");
+    Serial.println(_disk->getDelta(), DEC);
+  #endif
+  double magic_number = 0;
+  long t_release = _disk->t_hall + 6*delta_photo - T_FALL + magic_number * delta_photo;
+  while(t_release < (millis() + releaseEps)) {
     t_release += 12 * delta_photo;
   }
   return t_release;
@@ -27,15 +27,29 @@ void Controller::release() {
 
 
 void Controller::release(long releaseTime) {
-  //Serial.print("Release Time: ");
-  //Serial.println(releaseTime);
-  //weiß net mehr wie wir das wollten. ob jetzt wir jetzt nen delay nutzen wollten oder ne ständige abfrage
-  int eps = 100;
-  while(millis()<=releaseTime) {
-    //if(releaseTime - millis() > eps) {
+  #ifdef DEBUG
+    Serial.print("Release Time: ");
+    Serial.println(releaseTime);
+  #endif
+  
+  int eps = 300; //TODO noch anständig zu wählen
+  long currentTime = millis();
+  while(currentTime < releaseTime) {
+        
+    //if(_trigger->getValue()) {
+    //  increaseTriggerCount();
+    //}
+    //if((releaseTime - currentTime) > (eps + releaseEps)) {
+    //   delay(eps);
     //    releaseTime = getReleaseTime(); //um die verlangsamung miteinzubeziehen
     //}
+    currentTime = millis();
   }
   release();
-  //Serial.println("Gooo");
 }
+
+void Controller::increaseTriggerCount() {
+  count++;
+  Serial.println(count, DEC);
+}
+

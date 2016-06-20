@@ -5,26 +5,30 @@
 #include "Servomotor.h"
 #include "Disk.h"
 
+#define DEBUG 1
+
 class Controller {
 private:
-  Sensor* _hs;
-  Sensor* _ps;
-  Sensor* _tg;
   Servomotor* _servo;
   Disk* _disk;
+  Sensor* _trigger;
   bool isActivated;
-  int count;
+ 
+  int releaseEps = 100;
+  
   
 protected:
   const double S_FALL = 0.75;
   const double FALL_ACCLERATION = 9.81;
   const long T_FALL = 450;
+ 
 
 public:
-  Controller(Sensor* ps, Sensor* hs, Sensor* tg, Servomotor* servo, Disk* disk);
+  int count = 0;
+  Controller(Servomotor* servo, Disk* disk, Sensor* trigger);
 
  /*
- * Calculates the relase time for the given hole time.
+ * Calculates the release time for the given hole time.
  * 
  * @param t_hole time the hole passed the hall sensor
  * @return calculated release time
@@ -42,4 +46,6 @@ public:
  * @param releaseTime the time at which to release the ball.
  */
   void release(long releaseTime);
+
+  void increaseTriggerCount();
 };
