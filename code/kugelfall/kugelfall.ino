@@ -8,10 +8,7 @@
 #include "Disk.h"
 #include "Controller.h"
 
-<<<<<<< HEAD
-=======
 #define DEBUG 0
->>>>>>> aab87a284bc0b59cc5736830b81c8a18952703d7
 
 // sensors
 const int photoPin = 2;
