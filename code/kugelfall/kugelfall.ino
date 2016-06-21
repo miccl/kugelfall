@@ -15,7 +15,8 @@ const int photoPin = 2;
 const int hallPin = 3;
 const int triggerPin = 4;
 const int servoPin = 9;
-const int LEDPin = 13;
+const int LED1Pin = 12;
+const int LED2Pin = 13;
 
 //actors
 const int button1Pin = 10;
@@ -26,7 +27,8 @@ Sensor* hs;
 Sensor* ps;
 Sensor* tg;
 Servomotor* servo;
-Actor* led;
+Actor* led1;
+Actor* led2;
 Disk* disk;
 Controller* controller;
 
@@ -34,7 +36,8 @@ void setup() {
   hs = new Sensor(hallPin);
   ps = new Sensor(photoPin);
   tg = new Sensor(triggerPin);
-  led = new Actor(LEDPin);
+  led1 = new Actor(LED1Pin);
+  led2 = new Actor(LED2Pin);
   servo = new Servomotor(servoPin);
   disk = new Disk();
   controller = new Controller(servo, disk, tg);
@@ -52,11 +55,14 @@ void loop() {
   }
   Serial.println(disk->getDelta(), DEC); 
   if(!disk->stopped){ // disk is stopping
+    led1->setValue(false);
     if (controller->count > 0) {
       long t_release = controller->getReleaseTime();
       controller->release(t_release);
       controller->count--;
     }
+  } else {
+    led1->setValue(true);
   }
   
 }
@@ -74,8 +80,8 @@ void photoISR() {
 
 void hallISR() {
   disk->setHall(millis());
-  led->setValue(true);
+  led2->setValue(true);
   delay(100);
-  led->setValue(false);
+  led2->setValue(false);
 }
 
