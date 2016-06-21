@@ -4,7 +4,7 @@ Disk::Disk() {
 }
 
 long Disk::getDelta() {
-  return getMax(ring_puffer, PUFFER_SIZE);
+  return getMax(ring_puffer, PUFFER_SIZE);;
 }
 
 double Disk::getCyclesPerSecond() {
@@ -13,6 +13,7 @@ double Disk::getCyclesPerSecond() {
 }
 
 void Disk::setPuffer(long value) {
+  test_stopp(value);
   ring_puffer[puffer_idx] = value;
   puffer_idx = (puffer_idx + 1) % PUFFER_SIZE;
 }
@@ -43,5 +44,16 @@ long Disk::getMax(long a[], int num_elements) {
    }
  }
  return max;
+}
+
+void Disk::test_stopp(long new_delta) {
+  long diff = 20;
+  if (new_delta > old_delta + diff) {
+    stopped = true;
+  } else {
+    stopped = false;
+  }
+  old_delta = new_delta;
+
 }
 

@@ -18,8 +18,11 @@ private:
   long t_photo_high = 0;
   long t_hall = 0;
   int puffer_idx = 0;
+  long old_delta = 0;
   
 public:
+  boolean stopped = true;
+
   Disk();
 
   /**
@@ -46,4 +49,6 @@ public:
   long getHall();
 
   long getMax(long a[], int num_elements);
+
+  void test_stopp(long new_delta);
 };

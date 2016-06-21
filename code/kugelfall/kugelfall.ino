@@ -51,11 +51,12 @@ void loop() {
     controller->increaseTriggerCount();
   }
   Serial.println(disk->getDelta(), DEC); 
-  
-  if (controller->count > 0) {
-    long t_release = controller->getReleaseTime();
-    controller->release(t_release);
-    controller->count--;
+  if(!disk->stopped){ // disk is stopping
+    if (controller->count > 0) {
+      long t_release = controller->getReleaseTime();
+      controller->release(t_release);
+      controller->count--;
+    }
   }
   
 }
