@@ -18,25 +18,25 @@ double Disk::getCyclesPerSecond() {
   return 1/(t_cycle_ms/1000.0);
 }
 
-void Disk::setPuffer(long value) {
+void Disk::setPuffer(long delta) {
   ring_puffer[puffer_idx] = value;
   puffer_idx = (puffer_idx + 1) % PUFFER_SIZE;
   //test_stopp(value)
   //test_stopp(getDelta());
 }
 
-void Disk::setPhotoHigh(long value) {
-  t_photo_high = value;
+void Disk::setPhotoHigh(long photo_high) {
+  t_photo_high = photo_high;
   setPuffer(t_photo_high - t_photo_low);
 }
 
-void Disk::setPhotoLow(long value) {
-  t_photo_low = value;
+void Disk::setPhotoLow(long photo_low) {
+  t_photo_low = photo_low;
   setPuffer(t_photo_low - t_photo_high);
 }
 
-void Disk::setHall(long value) {
-  t_hall = value;
+void Disk::setHall(long hall) {
+  t_hall = hall;
 }
 
 long Disk::getHall() {

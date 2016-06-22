@@ -6,30 +6,32 @@
 \usepackage{amssymb}
 \usepackage{lmodern}
 \usepackage{paralist}
-\usepackage{titlepage}
+%\usepackage{titlepage}
 \usepackage{tabularx}
 \newcommand{\tablewidth}{.9\textwidth}
 \setkomafont{sectioning}{\normalfont\normalcolor\bfseries}
+\usepackage{graphicx}
+
 \begin{document}
-\begin{fullsizetitle}
-	\centering
-	\vspace*{8cm}
-	\Huge
-	\scshape
-	Laborbericht zum Praktikum\par
-	\Large
-	Komplexe Informationstechnische Systeme\par
-	\vspace*{.5cm}
-	\large
-	Sommersemester 2016\par
-	\vspace*{2cm}
-	\normalfont\normalsize
-	Bennecke, Saskia\\
-	Clauß, Michael-Carsten\\
-	Lindner, Peter\par
-	\vspace*{5cm}
-	Technische Universität Ilmenau
-\end{fullsizetitle}
+%\begin{fullsizetitle}
+%	\centering
+%	\vspace*{8cm}
+%	\Huge
+%	\scshape
+%	Laborbericht zum Praktikum\par
+%	\Large
+%	Komplexe Informationstechnische Systeme\par
+%	\vspace*{.5cm}
+%	\large
+%	Sommersemester 2016\par
+%	\vspace*{2cm}
+%	\normalfont\normalsize
+%	Bennecke, Saskia\\
+%	Clauß, Michael-Carsten\\
+%	Lindner, Peter\par
+%	\vspace*{5cm}
+%	Technische Universität Ilmenau
+%\end{fullsizetitle}
 \section{Systemanalyse}
 \subsection{Einleitung}
 TODO: Allgemeines Blabla, wie der Versuch aufgebaut ist und was es so alles daran gibt, was gemacht werden soll... Ggf. mit nem Bildchen verfeinern.
@@ -75,7 +77,7 @@ Die mit dem Loch versehene Scheibe hat folgende Daten:
 	\end{tabularx}
 	\caption{Sensorik}
 \end{table}
-\begin{table}[h]
+\begin{table}[htbp]
 	\centering
 	\begin{tabularx}{\tablewidth}{|l|r|X|}
 		\hline
@@ -92,7 +94,7 @@ Memo:
 \item Erwähnung, dass das ne Schranke ist und wir aus Gründen 10 ms nehmen
 \end{compactitem}
 TODO %TODO
-\subsection{Nutzung der Sensorwerte}
+\subsection{Nutzung der Sensorwerte} \label{ssec:nutzung}
 Um die geforderte Aufgabe umzusetzen, wurden zwei prinzipielle Möglichkeiten in Betracht gezogen, die sich auf die Art und Weise der verschiedenen Messvorgänge beziehen.
 \paragraph{Möglichkeit 1: Polling} Für eine bestimmte Zeitdauer werden die Anzahl der Flankenwechsel gezählt, die der Photosensor liefert. Anhand dessen wird die Frequenz der Schwarz-Weiß-Wechsel gebildet und die Geschwindigkeit des Lochs auf der Bahn berechnet.
 \begin{compactitem}
@@ -100,4 +102,8 @@ Um die geforderte Aufgabe umzusetzen, wurden zwei prinzipielle Möglichkeiten in
 \item Ein festes Intervall muss sehr lang sein, da sehr langsame Drehungen richtig erkannt werden müssen.
 \end{compactitem}
 \paragraph{Möglichkeit 2: Interrupts} Nach Knopfdruck (Interrupt, dabei \#Knopfdrücke mitloggen) liefern die nächsten beiden Flanken des Photosensors ebenfalls einen Interrupt. Mittels einer einfachen binären Zustandsvariable wird das Warten auf die zweite Flanke realisiert. Nach der zweiten Flanke wird die Zeitdifferenz $\Delta t$ gebildet und anhand dessen die Geschwindigkeit $v_\text{Loch}$ des Lochs auf der Lochbahn: \[v_{\text{Loch}} = \frac{\text{Sektorbreite}}{\Delta t}\]
+
+\section{Design}
+	\input{design}
+
 \end{document}

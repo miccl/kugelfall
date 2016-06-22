@@ -38,13 +38,13 @@ public:
   double getCyclesPerSecond();
 
   
-  void setPuffer(long value);
+  void setPuffer(long delta);
 
-  void setPhotoHigh(long value);
+  void setPhotoHigh(long photo_high);
 
-  void setPhotoLow(long value);
+  void setPhotoLow(long photo_low);
 
-  void setHall(long value);
+  void setHall(long hall);
 
   long getHall();
 

@@ -35,6 +35,7 @@ Controller* controller;
 Sensor* button1;
 
 void setup() {
+  disk = new Disk();
   hs = new Sensor(hallPin);
   ps = new Sensor(photoPin);
   tg = new Sensor(triggerPin);
@@ -42,7 +43,6 @@ void setup() {
   led2 = new Actor(LED2Pin);
   button1 = new Sensor(button1Pin);
   servo = new Servomotor(servoPin);
-  disk = new Disk();
   controller = new Controller(servo, disk, tg);
 
   attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoISR, CHANGE);
