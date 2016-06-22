@@ -13,7 +13,7 @@ long Controller::getReleaseTime() {
     Serial.println(_disk->getDelta(), DEC);
   #endif
   double magic_number = 0;
-  long t_release = _disk->t_hall + 6*delta_photo - T_FALL + magic_number * delta_photo;
+  long t_release = _disk->getHall() + 6*delta_photo - T_FALL + magic_number * delta_photo;
   while(t_release < (millis() + releaseEps)) {
     t_release += 12 * delta_photo;
   }
