@@ -50,6 +50,8 @@ void Controller::release(long releaseTime) {
 
 void Controller::increaseTriggerCount() {
   count++;
+  #ifdef DEBUG
   Serial.println(count, DEC);
+  #endif
 }
 

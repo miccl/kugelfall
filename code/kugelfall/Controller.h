@@ -46,5 +46,4 @@ public:
 
   void increaseTriggerCount();
 
-  void addToRIngPuffer(long value);
 };
