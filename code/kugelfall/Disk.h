@@ -50,5 +50,7 @@ public:
 
   long getMax(long a[], int num_elements);
 
+  long getAvg(long a[], int num_elements);
+
   void test_stopp(long new_delta);
 };
