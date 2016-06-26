@@ -19,7 +19,7 @@ double Disk::getCyclesPerSecond() {
 }
 
 void Disk::setPuffer(long delta) {
-  ring_puffer[puffer_idx] = value;
+  ring_puffer[puffer_idx] = delta;
   puffer_idx = (puffer_idx + 1) % PUFFER_SIZE;
   //test_stopp(value)
   //test_stopp(getDelta());

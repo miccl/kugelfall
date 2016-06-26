@@ -5,29 +5,53 @@
 #include "Servomotor.h"
 #include "Disk.h"
 
+/**
+ * Controller class. 
+ */
 class Controller {
 private:
+
+  /**
+   * Pointer to the servomotor instance.
+   */
   Servomotor* _servo;
+  /**
+   * Pointer to the disk instance.
+   */
   Disk* _disk;
-  Sensor* _trigger;
-  bool isActivated;
+  /**
+   * 
+   */
   int releaseEps = 100;
   
   
 protected:
+  /**
+   * Distance between release and hole in cm.
+   */
   const double S_FALL = 0.75;
-  const double FALL_ACCLERATION = 9.81;
+  /**
+   * Falling time of a ball from release to the hole.
+   */
   const long T_FALL = 450;
  
 
 public:
+  /**
+   * Number of trigger counts at a time.
+   */
   int count = 0;
-  Controller(Servomotor* servo, Disk* disk, Sensor* trigger);
+  /**
+   * Class constructor.
+   * 
+   * @param servo The pointer to the servomotor instance.
+   * @param disk The pointer to the disk instance.
+   */
+  Controller(Servomotor* servo, Disk* disk);
 
  /*
- * Calculates the release time for the given hole time.
+ * Calculates the release time.
  * 
- * @param t_hole time the hole passed the hall sensor
  * @return calculated release time
  */
   long getReleaseTime();
@@ -40,10 +64,13 @@ public:
   /**
  * Releases a ball at the given time.
  * 
- * @param releaseTime the time at which to release the ball.
+ * @param releaseTime The time at which to release the ball.
  */
   void release(long releaseTime);
 
+  /**
+   * Increase the trigger counter.
+   */
   void increaseTriggerCount();
 
 };

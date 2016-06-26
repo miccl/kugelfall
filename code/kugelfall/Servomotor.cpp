@@ -7,9 +7,9 @@ Servomotor::Servomotor(int pin) : Actor(pin) {
 }
 
 void Servomotor::open() {
-	_servo.write(endPos);
+	_servo.write(END_POS);
 }
 
 void Servomotor::close() {
-	_servo.write(startPos);
+	_servo.write(START_POS);
 }
