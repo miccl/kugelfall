@@ -54,5 +54,17 @@ void Controller::release(long releaseTime) {
       break;
     }
   }
+
+    long currentTime = millis();
+  
+  while(currentTime >= releaseTime - eps && currentTime <= releaseTime + eps) {        
+    while (_disk->stopped) { //wenn sie gestoppt wird, dann soll nichts getan werden
+      delay(10);
+    }
+
+    //Neuberechnugn der Zeit
+    releaseTime = getReleaseTime();
+    currentTime = millis();
+  }
 }
 
