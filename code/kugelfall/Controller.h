@@ -38,10 +38,6 @@ protected:
 
 public:
   /**
-   * Number of trigger counts at a time.
-   */
-  int count = 0;
-  /**
    * Class constructor.
    * 
    * @param servo The pointer to the servomotor instance.
@@ -63,14 +59,10 @@ public:
 
   /**
  * Releases a ball at the given time.
+ * During the time to wait, the release time gets updated.
  * 
  * @param releaseTime The time at which to release the ball.
  */
   void release(long releaseTime);
-
-  /**
-   * Increase the trigger counter.
-   */
-  void increaseTriggerCount();
 
 };

@@ -87,6 +87,11 @@ Controller* controller;
 Sensor* button1;
 
 /**
+* Number of trigger counts at a time.
+*/
+int count = 0;
+
+/**
  * Setups the Arduino programm. 
  * Invoked once.
  * 
@@ -118,28 +123,24 @@ void setup() {
  * If so, it starts the release process by invoking the controller.
  */
 void loop() {
-  if(!button1->getValue()) {
-    if(tg->getValue()) {
-      controller->increaseTriggerCount();
-    }
-    disk->getDelta(); 
-    if(!disk->stopped){ // disk is stopping
-      led1->setValue(false);
-      if (controller->count > 0) {
-        long t_release = controller->getReleaseTime();
-        controller->release(t_release);
-        controller->count--;
-      }
-    } else {
-      led1->setValue(true);
-    }
+  if(tg->getValue()) {
+    count++;
+    led1->setValue(1);
+    delay(10);
+    led1->setValue(0);
+  }
+  //disk->getDelta(); 
+  if (count > 0) {
+    long t_release = controller->getReleaseTime();
+    controller->release(t_release);
+    count--;
   }
   
 }
 
 /**
  * Interrupt routine function for the photosensor.
- * Called when the sensor detects a falling and rising flank.
+ * Called when the photosensor detects a falling and rising flank.
  */
 void photoISR() {
   if(isPhotoHigh) {
@@ -154,7 +155,7 @@ void photoISR() {
 
 /**
  * Interrupt routing function for the hallsensor.
- * Called when the sensor detects a rising flank.
+ * Called when the hallsensor detects a rising flank.
  */
 void hallISR() {
   disk->setHall(millis());

@@ -5,11 +5,11 @@ Disk::Disk() {
 
 long Disk::getDelta() {
   long max = getMax(ring_puffer, PUFFER_SIZE);
+  #ifdef DEBUG
   Serial.print(max, DEC);
   Serial.print(",");
   Serial.println(getAvg(ring_puffer, PUFFER_SIZE), DEC);
-  //delay(1);
-  //return getMax(ring_puffer, PUFFER_SIZE);
+  #endif
   return max;
 }
 
@@ -21,8 +21,7 @@ double Disk::getCyclesPerSecond() {
 void Disk::setPuffer(long delta) {
   ring_puffer[puffer_idx] = delta;
   puffer_idx = (puffer_idx + 1) % PUFFER_SIZE;
-  //test_stopp(value)
-  //test_stopp(getDelta());
+  test_stopp(delta);
 }
 
 void Disk::setPhotoHigh(long photo_high) {
@@ -66,13 +65,15 @@ long Disk::getAvg(long a[], int num_elements) {
 void Disk::test_stopp(long new_delta) {
   long stop_diff = 50;
   long start_diff = 100;
-  if (new_delta > (old_delta + stop_diff)) {
+  if ((new_delta - old_delta) > stop_diff ) {
     stopped = true;
-    Serial.print("STOPP:");
-    Serial.print(old_delta);
-    Serial.print(",");
-    Serial.println(new_delta);
-  } 
+    //Serial.print("STOPP:");
+    //Serial.print(old_delta);
+    //Serial.print(",");
+    //Serial.println(new_delta);
+  } else {
+    stopped = false;
+  }
 //  else if (new_delta <  (old_delta - start_diff)) {
 //    Serial.println("START");
 //    stopped = false;

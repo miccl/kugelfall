@@ -10,14 +10,15 @@ long Controller::getReleaseTime() {
   long delta_photo = _disk->getDelta();
   #ifdef DEBUG
     Serial.print("Delta: ");
-    Serial.println(_disk->getDelta(), DEC);
+    Serial.println(delta_photo, DEC);
   #endif
   double magic_number = 0;
-  long t_release = _disk->getHall() + 6*delta_photo - T_FALL + magic_number * delta_photo;
-  while(t_release < (millis() + releaseEps)) {
-    t_release += 12 * delta_photo;
+  long releaseTime = _disk->getHall() + 6*delta_photo - T_FALL + magic_number * delta_photo;
+  long currentTime = millis();
+  while(releaseTime < currentTime) {
+    releaseTime += 12 * delta_photo;
   }
-  return t_release;
+  return releaseTime;
 }
 
 void Controller::release() {
@@ -28,30 +29,30 @@ void Controller::release() {
 
 
 void Controller::release(long releaseTime) {
+  //TODO nen bissel unlogisch hier releaseTime zu übergeben, wenn wir es eh gleich wieder überschreiben. hab es aber erstmal drin gelassen.
   #ifdef DEBUG
     Serial.print("Release Time: ");
     Serial.println(releaseTime);
   #endif
   
-  int eps = 300; //TODO noch anständig zu wählen
-  long currentTime = millis();
-  while(currentTime < releaseTime) {        
-    //if(_trigger->getValue()) {
-    //  increaseTriggerCount();
-    //}
-    //if((releaseTime - currentTime) > (eps + releaseEps)) {
-    //   delay(eps);
-    //    releaseTime = getReleaseTime(); //um die verlangsamung miteinzubeziehen
-    //}
-    currentTime = millis();
-  }
-  release();
-}
+  int eps = 5; //TODO noch anständig zu wählen. hängt mit der Zeit, die für die Berechnung und millis() benötigt wird zusammen.
+               //TODO das problem. das wir mit releaseEps lösen wollten. ist das noch vorhanden?! übernimmt das "eps" diese rolle?
+  while(true) {        
+    if(_disk->stopped) { //wenn sie gestoppt wird, dann soll nichts getan werden
+      delay(10);
+      continue;
+    }
 
-void Controller::increaseTriggerCount() {
-  count++;
-  #ifdef DEBUG
-  Serial.println(count, DEC);
-  #endif
+    //Neuberechnugn der Zeit
+    releaseTime = getReleaseTime();
+    long currentTime = millis();
+
+    //TODO nochmal das darunter überlegen. wenn man genau darauf testet, funktioniert das nicht. deswegen diese range.
+    //     aber vielleicht geht das schlauer. vielleicht ohne "-eps". im prinzip macht es bestimmt eh net son nen großen unterschied. :D
+    if(currentTime >= releaseTime - eps && currentTime <= releaseTime + eps) {
+      release();
+      break;
+    }
+  }
 }
 
