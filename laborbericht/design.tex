@@ -7,7 +7,7 @@ Dazu werden zuerst die entworfenen Klassen mit deren Attributen und Methoden bes
 Danach werden einige Verhaltensaspekte mit Sequenzdiagramm veranschaulicht.
 
 \subsection{Struktur}
-Diagramm \ref{fig:class_diagramm} zeigt alle Klassen mit deren Beziehungen, Attributen und Methoden.
+Diagramm \ref{fig:class_diagramm} zeigt alle Klassen des Projekts mit deren Beziehungen, Attributen und Methoden.
 
 
 \begin{figure}[htbp]
@@ -25,7 +25,7 @@ Ebenso werden die Interrupts zum Photosensor und Hallsensor mit den Methoden \me
 Innerhalb der \method{loop()}-Methode wird auf Triggerdruck des Nutzers gewartet und ggf. der Mechanismus zur Berechnung der Fallzeit und das Loslassen aufgerufen (siehe Diagramm \ref{fig:loop_diagram}).
 
 \paragraph{\class{Component}} entspricht einer Hardware-Komponente, auf welche mittels Arduino zugegriffen werden kann.
-Es besitzt als einziges Attribut den \attr{pin} der Arduino-Kompoente, welcher im Konstruktor initialisiert wird und mittels der Funktion \method{getPin()} abgerufen werden kann.
+Es besitzt als einziges Attribut den \attr{pin} der Arduino-Komponente, welcher im Konstruktor initialisiert wird und mittels der Funktion \method{getPin()} abgerufen werden kann.
 
 \paragraph{\class{Sensor}} entspricht einem Hardware-Sensor und ist eine Spezialisierung der Klasse \class{Component}. 
 Es initialisiert die Instanz mit dem Pin-Modus \texttt{INPUT\_PULLUP} und dem übergebenen Pin.
@@ -40,14 +40,14 @@ Die Methode \method{setValue()} schreibt den übergebenen Wert zum Aktor.
 Es initialisiert im Konstruktur den Servomotor mit dem entsprechenden Pin.
 Die Methoden \method{open()} und \method{close()} dienen zum Öffnen und Schließen des Servomotors und damit der Fallvorrichtung.
 
-\paragraph{\class{Disk}} entspricht der Scheibe des Kugellfallaufbaus.
-Neben festen Spezifikationen wie die Anzahl der Sektoren und der Lochlänge hat es auch die Attribute zum Festhalten der letzten Zeiten für des Photo- und Hallsensors. 
-Zur Speicherung der Werte des Delta-Werte des Photosensor nutzt es einen Ringpuffer, sodass die 20 zuletzt ermittelten Werte gespeichert werden.
-So kann auf Fehler durch Messungenauigkeiten reagiert werden.
-Zudem enthält es Funktionen der Geschwindigkeit der Schreibe auf Basis der Sensorenzeiten.
+\paragraph{\class{Disk}} entspricht der Scheibe des Kugelfallaufbaus.
+Neben festen Spezifikationen wie die Anzahl der Sektoren und der Lochlänge hat es auch die Attribute zum Festhalten der letzten Zeiten für Photosensor  (\method{setPhotoLow()}, \method{setPhotoHigh()}) und Hallsensor (\method{setHall()}). 
+Zur Speicherung der Unterschiede der Zeitpunkte für steigende und fallende Flanke des Photosensor (Delta-Werte) nutzt es einen Ringpuffer (\method{setPuffer()}), sodass die 20 zuletzt ermittelten Delta-Werte gespeichert werden (siehe Diagramm \ref{fig:photoISR}).
+Zur Rückgabe eines Delta-Wertes (\method{getDelta()}) aus dem Ringpuffer wird die Funktion \method{getMax()} (bzw. \method{getAvg()}) verwendet.
+So können Fehler aufgrund von Messungenauigkeiten kompensiert werden.
 
 \paragraph{\class{Controller}} dient zur Berechnung der Fallzeit und dem Loslassen der Kugeln.
-Zur Berechnung der Fallzeit benutzt sie die feste Fallzeit der Kugel \attr{T\_FALL} und die Geschwindigkeitsberechnungen der Klasse \class{Disk} (näheres siehe \ref{ssec:nutzung}).
+Zur Berechnung der Fallzeit benutzt sie die feste Fallzeit der Kugel \attr{T\_FALL} und die Delta-Werte des Photosensors der Klasse \class{Disk} (näheres siehe Abschnitt \ref{ssec:nutzung}).
 Für das Fallenlassen nutzt es die Klasse \class{Servomotor}.
 
 \subsection{Verhalten}
@@ -72,12 +72,14 @@ Diagramm \ref{fig:loop_diagram} zeigt den Ablauf in der Dauerschleife in der Met
 	\label{fig:loop_diagram}
 \end{figure}
 So wird zuerst der Triggerwert ausgelesen und damit geguckt, ob er vom Nutzer gedrückt wurde.
-Ist das der Fall wird ein Triggerzähler im Controller um eins erhöht.
+Ist das der Fall wird der Triggerzähler um eins erhöht.
 Ist der Zähler derzeit größer null wird die Berechnung der Fallzeit und das Loslassen der Kugel initialisiert.
 So wird zuerst die Methode \method{getReleaseTime()} der Klasse \class{Controller} aufgerufen, welche die Zeit, bei welcher die Kugel fallengelassen werden soll, damit sie das Loch trifft, berechnet.
 Danach wird die Methode \method{release()} mit der berechneten Zeit aufgerufen.
-Diese wartet bis zur entsprechenden Zeit gewartet wird und lässt dann eine Kugel mittels der Methoden des \class{Servomotors} fallen.
-Danach wird der Zähler wieder verringert.
+Diese wartet bis zur entsprechenden Zeit und lässt dann eine Kugel mittels der Methoden des \class{Servomotors} fallen.
+Während der Wartezeit wird die Zeit des Loslassen andauernd aktualisiert, sodass jedwede Veränderungen, welche durch die Verlangsamung der Scheibe auftreten können, miteinbezogen werden.
+Nach dem Loslassen wird der Triggerzähler wieder verringert.
+
 
 Diagramm \ref{fig:photoISR} zeigt den Ablauf zum Festhalten der Messwerte des Photosensor mittels \method{photoISR()}. 
 \begin{figure}[htbp]
@@ -86,8 +88,11 @@ Diagramm \ref{fig:photoISR} zeigt den Ablauf zum Festhalten der Messwerte des Ph
 	\caption{Ablauf bei der Methode \method{photoISR} von Klasse \class{Controller}}
 	\label{fig:photoISR}
 \end{figure}
-So wird die  Methode \method{photoISR()} in Folge von steigenden und fallenden Flanken des Photosensor aufgerufen und die Werte mittels der Methode \method{setPhotoHigh()} bzw. \method{setPhotoLow} innerhalb eines Ringpuffers gespeichert.
-Zur Unterscheidung der steigenden und fallenden Flanken dient die boolesche Variable \attr{isPhotoHigh}.
+So wird die  Methode \method{photoISR()} in Folge von steigenden und fallenden Flanken des Photosensor aufgerufen.
+Die Werte mittels der Methode \method{setPhotoHigh()} bzw. \method{setPhotoLow()} gesichert.
+Dabei wird zuerst die Differenz der Werte berechnet und diese dann mit der Methode \method{setPuffer()} innerhalb des Ringpuffers gespeichert.
+%Zur Unterscheidung der steigenden und fallenden Flanken dient die boolesche Variable \attr{isPhotoHigh}.
+
 %Denn es stehen mit diesem Ringpuffer nicht nur auf der letzte Wert, sondern die letzten 20 Werte zur Verfügung.
 
 Diagramm \ref{fig:hallISR} zeigt den Ablauf zum Festhalten der Messwerte des Hallsensor mittels \method{hallISR()}.
@@ -98,4 +103,4 @@ Diagramm \ref{fig:hallISR} zeigt den Ablauf zum Festhalten der Messwerte des Hal
 	\label{fig:hallISR}
 \end{figure}
 So wird die Methode \method{hallISR()} in Folge einer steigenden Flanke aufgerufen und die Werte Mittels der Method \method{setHall()} gespeichert.
-Der Wert mittels \method{getHall()} ausgelesen werden.
+Der aktuelle Wert kann mittels \method{getHall()} ausgelesen werden.
