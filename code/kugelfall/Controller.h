@@ -33,7 +33,7 @@ protected:
   /**
    * Falling time of a ball from release to the hole.
    */
-  const long T_FALL = 450;
+  const long T_FALL = 520;
  
 
 public:
@@ -53,16 +53,19 @@ public:
   long getReleaseTime();
 
  /**
+  * Calculates a dynamic delay for given delta.
+  * 
+  */
+ long getDynamicDelay(long delta);
+ /**
  * Release a ball immediatly.
  */
   void release();
 
   /**
- * Releases a ball at the given time.
- * During the time to wait, the release time gets updated.
- * 
- * @param releaseTime The time at which to release the ball.
+ * Waits for release.
+ * During the waiting time, the release time gets updated.
  */
-  void release(long releaseTime);
+  void waitForRelease();
 
 };

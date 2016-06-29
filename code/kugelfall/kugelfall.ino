@@ -9,7 +9,7 @@
 #include "Disk.h"
 #include "Controller.h"
 
-//#define DEBUG 1
+#define DEBUG 0
 
 // sensors
 /**
@@ -111,7 +111,7 @@ void setup() {
 
   attachInterrupt(digitalPinToInterrupt(ps->getPin()), photoISR, CHANGE);
   attachInterrupt(digitalPinToInterrupt(hs->getPin()), hallISR, RISING);
-  #ifdef DEBUG 
+  #ifdef DEBUG
   Serial.begin(9600);           // set up Serial library at 9600 bps
   #endif
 }
@@ -125,14 +125,11 @@ void setup() {
 void loop() {
   if(tg->getValue()) {
     count++;
-    led1->setValue(1);
-    delay(10);
-    led1->setValue(0);
+    Serial.println(disk->getDelta(), DEC);
   }
-  //disk->getDelta(); 
+  
   if (count > 0) {
-    long t_release = controller->getReleaseTime();
-    controller->release(t_release);
+    controller->waitForRelease();
     count--;
   }
   

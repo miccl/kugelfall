@@ -12,15 +12,25 @@ long Controller::getReleaseTime() {
     Serial.print("Delta: ");
     Serial.println(delta_photo, DEC);
   #endif
-  double magic_number = 0;
-  long releaseTime = _disk->getHall() + 6*delta_photo - T_FALL + magic_number * delta_photo;
+  long releaseTime = _disk->getHall() + 6*delta_photo - (T_FALL + getDynamicDelay(delta_photo));
   long currentTime = millis();
   while(releaseTime < currentTime) {
-    releaseTime += 12 * delta_photo;
+    releaseTime += 12 * delta_photo - 6;
   }
   return releaseTime;
 }
 
+long Controller::getDynamicDelay(long delta) {
+  if(delta >= 0 && delta <25) {
+    return 0;
+  } else if (delta >=25 && delta <50) {
+    return ((0.2 * delta) - 5); 
+  } else if (delta >= 50 && delta <150) {
+    return ((0.06 * delta) + 5);
+  } else { //>150
+    return 15;
+  }
+}
 void Controller::release() {
     _servo->open();
     delay(100);
@@ -28,43 +38,32 @@ void Controller::release() {
 }
 
 
-void Controller::release(long releaseTime) {
-  //TODO nen bissel unlogisch hier releaseTime zu übergeben, wenn wir es eh gleich wieder überschreiben. hab es aber erstmal drin gelassen.
-  #ifdef DEBUG
-    Serial.print("Release Time: ");
-    Serial.println(releaseTime);
-  #endif
+void Controller::waitForRelease() { 
+  int eps = 5;
   
-  int eps = 5; //TODO noch anständig zu wählen. hängt mit der Zeit, die für die Berechnung und millis() benötigt wird zusammen.
-               //TODO das problem. das wir mit releaseEps lösen wollten. ist das noch vorhanden?! übernimmt das "eps" diese rolle?
   while(true) {        
-    if(_disk->stopped) { //wenn sie gestoppt wird, dann soll nichts getan werden
-      delay(10);
+    if(!_disk->isSteady()) { //wenn sie gestoppt wird, dann soll nichts getan werden
+      delay(100);
+      continue;
+    }
+    
+    //Neuberechnung der Zeit
+    long releaseTime = getReleaseTime();
+    long currentTime = millis();
+    
+    //long diff = releaseTime - currentTime;
+    //Serial.println(diff, DEC);
+    if((releaseTime - currentTime) > 200) {
+      //delay(150);
       continue;
     }
 
-    //Neuberechnugn der Zeit
-    releaseTime = getReleaseTime();
-    long currentTime = millis();
-
-    //TODO nochmal das darunter überlegen. wenn man genau darauf testet, funktioniert das nicht. deswegen diese range.
-    //     aber vielleicht geht das schlauer. vielleicht ohne "-eps". im prinzip macht es bestimmt eh net son nen großen unterschied. :D
-    if(currentTime >= releaseTime - eps && currentTime <= releaseTime + eps) {
-      release();
-      break;
+    while(releaseTime >= currentTime) {
+      currentTime = millis();
     }
+    release();
+    break;
   }
-
-//  long currentTime = millis();
-//  
-//  while(currentTime < releaseTime - eps || currentTime > releaseTime + eps) {        
-//    while (_disk->stopped) { //wenn sie gestoppt wird, dann soll nichts getan werden
-//      delay(10);
-//    }
-//
-//    //Neuberechnugn der Zeit
-//    releaseTime = getReleaseTime();
-//    currentTime = millis();
-//  }
+  //delay(1000); //gegen fehler von loslassen, direkt nachdem eine andere kugel losgelassen wurde
 }
 

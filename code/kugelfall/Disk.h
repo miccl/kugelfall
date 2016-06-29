@@ -5,7 +5,7 @@
 /**
  * Size of the ring puffer.
  */
-#define PUFFER_SIZE 20
+#define PUFFER_SIZE 24
 
 /**
  * A model for the disk of the experiment.
@@ -47,12 +47,16 @@ private:
    * old delta of the photosensor.
    */
   long old_delta = 0;
-  
+
+  /**
+   * 
+   */
+  boolean steadiness = true;
+
 public:
   /**
-   * Wether the disk is currently stopped or not.
+   * Whether the disk is currently stopped or not.
    */
-  boolean stopped = true;
 
   /**
    * Class constructor.
@@ -107,7 +111,12 @@ public:
   long getAvg(long a[], int num_elements);
 
   /**
-   * Tests if the disk is currently stopped or not.
+   * Whether the disk is steady or not.
    */
-  void test_stopp(long new_delta);
+  boolean isSteady();
+
+  /**
+   * Detects steadiness of the disk.
+   */
+  void computeSteadiness(long new_delta);
 };
