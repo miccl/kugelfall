@@ -41,14 +41,15 @@ Es initialisiert im Konstruktur den Servomotor mit dem entsprechenden Pin.
 Die Methoden \method{open()} und \method{close()} dienen zum Öffnen und Schließen des Servomotors und damit der Fallvorrichtung.
 
 \paragraph{\class{Disk}} entspricht der Scheibe des Kugelfallaufbaus.
-Neben festen Spezifikationen wie die Anzahl der Sektoren und der Lochlänge hat es auch die Attribute zum Festhalten der letzten Zeiten für Photosensor  (\method{setPhotoLow()}, \method{setPhotoHigh()}) und Hallsensor (\method{setHall()}). 
-Zur Speicherung der Unterschiede der Zeitpunkte für steigende und fallende Flanke des Photosensor (Delta-Werte) nutzt es einen Ringpuffer (\method{setPuffer()}), sodass die 20 zuletzt ermittelten Delta-Werte gespeichert werden (siehe Diagramm \ref{fig:photoISR}).
+Neben festen Spezifikationen wie die Anzahl der Sektoren hat es auch die Attribute zum Festhalten der letzten Zeiten für Photosensor  (\method{setPhotoLow()}, \method{setPhotoHigh()}) und Hallsensor (\method{setHall()}). 
+Zur Speicherung der Unterschiede der Zeitpunkte für steigende und fallende Flanke des Photosensor (Delta-Werte) nutzt es einen Ringpuffer, sodass die 24 zuletzt ermittelten Delta-Werte gespeichert werden (siehe Diagramm \ref{fig:photoISR}).
 Zur Rückgabe eines Delta-Wertes (\method{getDelta()}) aus dem Ringpuffer wird die Funktion \method{getMax()} (bzw. \method{getAvg()}) verwendet.
 So können Fehler aufgrund von Messungenauigkeiten kompensiert werden.
 
 \paragraph{\class{Controller}} dient zur Berechnung der Fallzeit und dem Loslassen der Kugeln.
-Zur Berechnung der Fallzeit benutzt sie die feste Fallzeit der Kugel \attr{T\_FALL} und die Delta-Werte des Photosensors der Klasse \class{Disk} (näheres siehe Abschnitt \ref{ssec:nutzung}).
-Für das Fallenlassen nutzt es die Klasse \class{Servomotor}.
+So dient die Methode \method{waitForRelease()} zur der Berechnung Loslasszeit, dem Warten auf die korrekt Fallzeit und dann dem Loslassen (siehe Diagramm \ref{fig:loop_diagram}).
+Zur Berechnung der Fallzeit dient die Methode \method{getReleaseTime()}, welche dabei die feste Fallzeit der Kugel \attr{T\_FALL}, einen dynamischen Delay (\method{getDynamicDelay()} und die Delta-Werte des Photosensors der Klasse \class{Disk} benutzt (näheres siehe Abschnitt \ref{ssec:nutzung}).
+Für das Fallenlassen mit der Methode \method{release()} nutzt es die Klasse \class{Servomotor}.
 
 \subsection{Verhalten}
 Im Folgenden werden einige Verhaltensaspekte beschrieben.
@@ -64,7 +65,7 @@ Dabei werden nacheinander die einzelnen Klassen instantiiert.
 Bei den Sensoren müssen die spezifischen Pins angegeben werden.
 Bei der Initialisierung des \class{Controller} werden die Instanzen der Klassen \class{Servomotor} und \class{Disk} mit übergeben.
 
-Diagramm \ref{fig:loop_diagram} zeigt den Ablauf in der Dauerschleife in der Methode \method{loop()}.
+Diagramm \ref{fig:loop_diagram} zeigt auf sehr übersichtliche Art den Ablauf in der Dauerschleife in der Methode \method{loop()}.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{abb/loop_cropped}
@@ -73,12 +74,16 @@ Diagramm \ref{fig:loop_diagram} zeigt den Ablauf in der Dauerschleife in der Met
 \end{figure}
 So wird zuerst der Triggerwert ausgelesen und damit geguckt, ob er vom Nutzer gedrückt wurde.
 Ist das der Fall wird der Triggerzähler um eins erhöht.
-Ist der Zähler derzeit größer null wird die Berechnung der Fallzeit und das Loslassen der Kugel initialisiert.
-So wird zuerst die Methode \method{getReleaseTime()} der Klasse \class{Controller} aufgerufen, welche die Zeit, bei welcher die Kugel fallengelassen werden soll, damit sie das Loch trifft, berechnet.
-Danach wird die Methode \method{release()} mit der berechneten Zeit aufgerufen.
-Diese wartet bis zur entsprechenden Zeit und lässt dann eine Kugel mittels der Methoden des \class{Servomotors} fallen.
-Während der Wartezeit wird die Zeit des Loslassen andauernd aktualisiert, sodass jedwede Veränderungen, welche durch die Verlangsamung der Scheibe auftreten können, miteinbezogen werden.
+Ist der Zähler derzeit größer null wird die Berechnung der Fallzeit und das Loslassen der Kugel mit der Methode \method{waitForRelease()} gestartet.
+Dabei wird in der Dauerschleife zuerst mit der Methode \method{isSteady()} der Klasse \class{Disk} geprüft, ob sich die Scheibe derzeit stabil dreht.
+Nur im Falle einer stabil drehenden Scheibe wird weiter fortgefahren.
+So wird die mit der Methode \method{getReleaseTime()} die Zeit zum Loslassen der Kugel (näheres siehe Abschnitt \ref{ssec:nutzung}) und die aktuelle Zeit bestimmt.
+Ist die Zeit bis zum Fallenlassen noch sehr lang ($>200$ms) wird die Schleife nochmals von vorne beginnen und somit auch die Loslasszeit aktualisiert.
+Ist die Zeit bis zum Falllenlassen jedoch nur noch kurz ($\leq200$ms) wird mit Hilfe einer Dauerschleife solange gewartet, bis die richtige Zeit erreicht ist und mit der Methode \method{release()} losgelassen.
+Zum Loslassen der Kugel werden die Methoden der Klasse \class{Servomotors} verwendet.
 Nach dem Loslassen wird der Triggerzähler wieder verringert.
+Das Vorgehen mit der Fallunterscheidung in Hinblick auf die verbleibende Zeit hat den Vorteil, dass die Zeit im Falle einer weit entfernten Loslasszeit nochmals aktualisiert wird, sodass jedwede Veränderungen, welche durch die Verlangsamung der Scheibe auftreten können, berücksichtigt werden.
+
 
 
 Diagramm \ref{fig:photoISR} zeigt den Ablauf zum Festhalten der Messwerte des Photosensor mittels \method{photoISR()}. 
