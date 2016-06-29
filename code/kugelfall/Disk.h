@@ -20,7 +20,6 @@ private:
    * Number of black and white sectors.
    */
   const int N_SECTORS = 12;
-  const double S_HOLE = 0.06;
 
   /**
    * Ring puffer to save the photosensor values.
@@ -44,19 +43,16 @@ private:
    */
   int puffer_idx = 0;
   /**
-   * old delta of the photosensor.
+   * old delta value of the photosensor.
    */
   long old_delta = 0;
 
   /**
-   * 
+   * Whether the disk is steady or not.
    */
   boolean steadiness = true;
 
 public:
-  /**
-   * Whether the disk is currently stopped or not.
-   */
 
   /**
    * Class constructor.

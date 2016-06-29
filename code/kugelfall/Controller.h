@@ -27,10 +27,6 @@ private:
   
 protected:
   /**
-   * Distance between release and hole in cm.
-   */
-  const double S_FALL = 0.75;
-  /**
    * Falling time of a ball from release to the hole.
    */
   const long T_FALL = 520;
