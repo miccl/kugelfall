@@ -45,6 +45,9 @@ Neben festen Spezifikationen wie die Anzahl der Sektoren hat es auch die Attribu
 Zur Speicherung der Unterschiede der Zeitpunkte für steigende und fallende Flanke des Photosensor (Delta-Werte) nutzt es einen Ringpuffer, sodass die 24 zuletzt ermittelten Delta-Werte gespeichert werden (siehe Diagramm \ref{fig:photoISR}).
 Zur Rückgabe eines Delta-Wertes (\method{getDelta()}) aus dem Ringpuffer wird die Funktion \method{getMax()} (bzw. \method{getAvg()}) verwendet.
 So können Fehler aufgrund von Messungenauigkeiten kompensiert werden.
+Die Funktion \method{computeSteadiness()} bestimmt, ob die Scheibe derzeit stabil oder nicht ist.
+Dabei wird der aktuelle übergebene Delta-Wert mit dem vorherigen verglichen und im Falle eines großen Unterschiedes zwischen diesen beiden Werten wird die Scheibe als instabil angesehen.
+Dieser Wert kann mit der Methode \method{isSteady()} ausgelesen werden.
 
 \paragraph{\class{Controller}} dient zur Berechnung der Fallzeit und dem Loslassen der Kugeln.
 So dient die Methode \method{waitForRelease()} zur der Berechnung Loslasszeit, dem Warten auf die korrekt Fallzeit und dann dem Loslassen (siehe Diagramm \ref{fig:loop_diagram}).
@@ -83,8 +86,6 @@ Ist die Zeit bis zum Falllenlassen jedoch nur noch kurz ($\leq200$ms) wird mit H
 Zum Loslassen der Kugel werden die Methoden der Klasse \class{Servomotors} verwendet.
 Nach dem Loslassen wird der Triggerzähler wieder verringert.
 Das Vorgehen mit der Fallunterscheidung in Hinblick auf die verbleibende Zeit hat den Vorteil, dass die Zeit im Falle einer weit entfernten Loslasszeit nochmals aktualisiert wird, sodass jedwede Veränderungen, welche durch die Verlangsamung der Scheibe auftreten können, berücksichtigt werden.
-
-
 
 Diagramm \ref{fig:photoISR} zeigt den Ablauf zum Festhalten der Messwerte des Photosensor mittels \method{photoISR()}. 
 \begin{figure}[htbp]
