@@ -5,11 +5,11 @@ Disk::Disk() {
 
 long Disk::getDelta() {
   long max = getMax(ring_puffer, PUFFER_SIZE);
-  //#ifdef DEBUG
-  //Serial.print(max, DEC);
-  //Serial.print(",");
-  //Serial.println(getAvg(ring_puffer, PUFFER_SIZE), DEC);
-  //#endif
+  #ifdef DEBUG
+  Serial.print(max, DEC);
+  Serial.print(",");
+  Serial.println(getAvg(ring_puffer, PUFFER_SIZE), DEC);
+  #endif
   return max;
 }
 

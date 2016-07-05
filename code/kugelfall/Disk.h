@@ -9,8 +9,6 @@
 
 /**
  * A model for the disk of the experiment.
- * 
- * 
  */
 class Disk {
 

@@ -19,10 +19,6 @@ private:
    * Pointer to the disk instance.
    */
   Disk* _disk;
-  /**
-   * 
-   */
-  int releaseEps = 100;
   
   
 protected:
@@ -51,6 +47,8 @@ public:
  /**
   * Calculates a dynamic delay for given delta.
   * 
+  * @param The delta.
+  * @return calculated delay.
   */
  long getDynamicDelay(long delta);
  /**
